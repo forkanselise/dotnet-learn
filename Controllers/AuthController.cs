@@ -67,6 +67,7 @@ namespace dotnet_Learn.Controllers
 
             var claims = new[]
             {
+                new Claim(ClaimTypes.NameIdentifier, user.Id!),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id!),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email!),
                 new Claim(ClaimTypes.Name, user.Name!)
