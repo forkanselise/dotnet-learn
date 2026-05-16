@@ -46,3 +46,4 @@ C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet Learn
 C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet Learn.genruntimeconfig.cache
 C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\ref\dotnet Learn.dll
 C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\BCrypt-Net-Next.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet Learn.sourcelink.json
