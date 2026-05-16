@@ -33,7 +33,11 @@ namespace dotnet_Learn.Controllers
             {
                 return NotFound();
             }
-            return user;
+            return new User{
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email
+            };
         }
 
         [HttpPost]

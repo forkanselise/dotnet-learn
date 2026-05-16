@@ -25,7 +25,7 @@ namespace dotnet_Learn.Controllers
         [HttpPost]
         public async Task<IActionResult> SendMessage([FromBody] SendMessageDto request)
         {
-            var senderId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var senderId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
             
             if (string.IsNullOrEmpty(senderId))
                 return Unauthorized();
@@ -44,7 +44,7 @@ namespace dotnet_Learn.Controllers
         [HttpGet("{otherUserId}")]
         public async Task<ActionResult<IEnumerable<Message>>> GetConversation(string otherUserId)
         {
-            var myId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var myId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
 
             if (string.IsNullOrEmpty(myId))
                 return Unauthorized();
