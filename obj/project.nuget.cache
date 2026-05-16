@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "h1kal8EyHPQ=",
+  "dgSpecHash": "Bogvqo5N0PM=",
   "success": true,
   "projectFilePath": "C:\\Users\\Forkan\\Desktop\\learn-basics\\dotnet Learn\\dotnet Learn.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,7 @@
     "C:\\Users\\Forkan\\.nuget\\packages\\dnsclient\\1.6.1\\dnsclient.1.6.1.nupkg.sha512",
     "C:\\Users\\Forkan\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\10.0.7\\microsoft.aspnetcore.authentication.jwtbearer.10.0.7.nupkg.sha512",
     "C:\\Users\\Forkan\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.1\\microsoft.aspnetcore.openapi.10.0.1.nupkg.sha512",
+    "C:\\Users\\Forkan\\.nuget\\packages\\microsoft.aspnetcore.signalr\\1.2.10\\microsoft.aspnetcore.signalr.1.2.10.nupkg.sha512",
     "C:\\Users\\Forkan\\.nuget\\packages\\microsoft.identitymodel.abstractions\\8.0.1\\microsoft.identitymodel.abstractions.8.0.1.nupkg.sha512",
     "C:\\Users\\Forkan\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\8.0.1\\microsoft.identitymodel.jsonwebtokens.8.0.1.nupkg.sha512",
     "C:\\Users\\Forkan\\.nuget\\packages\\microsoft.identitymodel.logging\\8.0.1\\microsoft.identitymodel.logging.8.0.1.nupkg.sha512",
@@ -24,6 +25,18 @@
     "C:\\Users\\Forkan\\.nuget\\packages\\zstdsharp.port\\0.7.3\\zstdsharp.port.0.7.3.nupkg.sha512"
   ],
   "logs": [
+    {
+      "code": "NU1510",
+      "level": "Warning",
+      "message": "PackageReference Microsoft.AspNetCore.SignalR will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
+      "projectPath": "C:\\Users\\Forkan\\Desktop\\learn-basics\\dotnet Learn\\dotnet Learn.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\Forkan\\Desktop\\learn-basics\\dotnet Learn\\dotnet Learn.csproj",
+      "libraryId": "Microsoft.AspNetCore.SignalR",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
     {
       "code": "NU1902",
       "level": "Warning",

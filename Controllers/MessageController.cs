@@ -16,10 +16,12 @@ namespace dotnet_Learn.Controllers
     public class MessageController : ControllerBase
     {
         private readonly IMongoCollection<Message> _messages;
+        private readonly Microsoft.AspNetCore.SignalR.IHubContext<Hubs.ChatHub> _hubContext;
 
-        public MessageController(MongoDbService mongoDbService)
+        public MessageController(MongoDbService mongoDbService, Microsoft.AspNetCore.SignalR.IHubContext<Hubs.ChatHub> hubContext)
         {
             _messages = mongoDbService.database.GetCollection<Message>("Messages");
+            _hubContext = hubContext;
         }
 
         [HttpPost]
@@ -38,6 +40,10 @@ namespace dotnet_Learn.Controllers
             };
 
             await _messages.InsertOneAsync(message);
+
+            // Notify via SignalR!
+            await _hubContext.Clients.User(request.ReceiverId).SendAsync("ReceiveMessage", senderId, request.Text);
+
             return Ok(message);
         }
 

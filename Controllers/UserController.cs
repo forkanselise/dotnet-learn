@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using dotnet_Learn.Entities;
@@ -18,26 +18,34 @@ namespace dotnet_Learn.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<User>> Get()
+        public async Task<IActionResult> Get()
         {
             var users = await _users.Find(FilterDefinition<User>.Empty).ToListAsync();
-            return users;
-
+            var safeUsers = users.Select(u => new {
+                u.Id,
+                u.Name,
+                u.Email,
+                u.IsOnline,
+                u.LastSeen
+            });
+            return Ok(safeUsers);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUserById(string id)
+        public async Task<ActionResult> GetUserById(string id)
         {
             var user = await _users.Find(u => u.Id == id).FirstOrDefaultAsync();
             if (user == null)
             {
                 return NotFound();
             }
-            return new User{
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email
-            };
+            return Ok(new {
+                user.Id,
+                user.Name,
+                user.Email,
+                user.IsOnline,
+                user.LastSeen
+            });
         }
 
         [HttpPost]

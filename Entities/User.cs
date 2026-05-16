@@ -15,5 +15,11 @@ namespace dotnet_Learn.Entities
         public string? Email { get; set; }
         [BsonElement("passwordHash"), BsonRepresentation(BsonType.String)]
         public string? PasswordHash { get; set; }
+
+        [BsonElement("isOnline"), BsonRepresentation(BsonType.Boolean)]
+        public bool IsOnline { get; set; } = false;
+
+        [BsonElement("lastSeen"), BsonRepresentation(BsonType.DateTime)]
+        public DateTime LastSeen { get; set; } = DateTime.UtcNow;
     }
 }
