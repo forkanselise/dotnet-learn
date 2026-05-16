@@ -26,6 +26,8 @@ namespace dotnet_Learn.Hubs
             var userId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier) 
                          ?? Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sub);
 
+            Console.WriteLine($"--- SignalR Connection: {Context.ConnectionId} | User: {userId ?? "ANONYMOUS"} ---");
+
             if (!string.IsNullOrEmpty(userId))
             {
                 var connections = _userConnections.GetOrAdd(userId, _ => new HashSet<string>());
@@ -34,15 +36,11 @@ namespace dotnet_Learn.Hubs
                     connections.Add(Context.ConnectionId);
                 }
 
-                // Only update DB and notify others if this is the FIRST connection for this user
                 if (connections.Count == 1)
                 {
-                    var update = Builders<User>.Update
-                        .Set(u => u.IsOnline, true)
-                        .Set(u => u.LastSeen, DateTime.UtcNow);
-                    
-                    await _users.UpdateOneAsync(u => u.Id == userId, update);
+                    await _users.UpdateOneAsync(u => u.Id == userId, Builders<User>.Update.Set(u => u.IsOnline, true));
                     await Clients.All.SendAsync("UserStatusChanged", userId, true);
+                    Console.WriteLine($"--- User {userId} is now ONLINE ---");
                 }
             }
 
@@ -53,6 +51,9 @@ namespace dotnet_Learn.Hubs
         {
             var userId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier) 
                          ?? Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+            Console.WriteLine($"--- SignalR Disconnection: {Context.ConnectionId} | User: {userId ?? "ANONYMOUS"} ---");
+// ...
 
             if (!string.IsNullOrEmpty(userId))
             {
@@ -72,12 +73,9 @@ namespace dotnet_Learn.Hubs
                     // Only update DB and notify others if this was the LAST connection for this user
                     if (isLastConnection)
                     {
-                        var update = Builders<User>.Update
-                            .Set(u => u.IsOnline, false)
-                            .Set(u => u.LastSeen, DateTime.UtcNow);
-                        
-                        await _users.UpdateOneAsync(u => u.Id == userId, update);
+                        await _users.UpdateOneAsync(u => u.Id == userId, Builders<User>.Update.Set(u => u.IsOnline, false).Set(u => u.LastSeen, DateTime.UtcNow));
                         await Clients.All.SendAsync("UserStatusChanged", userId, false);
+                        Console.WriteLine($"--- User {userId} is now OFFLINE ---");
                     }
                 }
             }
