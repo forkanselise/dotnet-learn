@@ -42,8 +42,8 @@ namespace dotnet_Learn.Controllers
 
             await _messages.InsertOneAsync(message);
 
-            // Notify via SignalR!
-            await _hubContext.Clients.User(request.ReceiverId).SendAsync("ReceiveMessage", senderId, request.Text);
+            // Notify both Receiver and Sender via SignalR!
+            await _hubContext.Clients.Users(request.ReceiverId, senderId).SendAsync("ReceiveMessage", senderId, request.Text);
 
             return Ok(message);
         }
