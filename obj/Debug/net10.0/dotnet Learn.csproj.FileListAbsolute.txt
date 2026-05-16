@@ -1,0 +1,48 @@
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet Learn.csproj.AssemblyReference.cache
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet Learn.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet Learn.AssemblyInfoInputs.cache
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet Learn.AssemblyInfo.cs
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet Learn.csproj.CoreCompileInputs.cache
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet Learn.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet Learn.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\appsettings.Development.json
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\appsettings.json
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\dotnet Learn.staticwebassets.endpoints.json
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\dotnet Learn.exe
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\dotnet Learn.deps.json
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\dotnet Learn.runtimeconfig.json
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\dotnet Learn.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\dotnet Learn.pdb
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\DnsClient.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\Microsoft.OpenApi.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\MongoDB.Bson.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\MongoDB.Driver.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\SharpCompress.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\Snappier.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\ZstdSharp.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\rjimswa.dswa.cache.json
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\scopedcss\bundle\dotnet Learn.styles.css
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\staticwebassets.build.json
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\staticwebassets.build.json.cache
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\staticwebassets.development.json
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\staticwebassets.build.endpoints.json
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\swae.build.ex.cache
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet L.518D0B35.Up2Date
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet Learn.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\refint\dotnet Learn.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet Learn.pdb
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\dotnet Learn.genruntimeconfig.cache
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\obj\Debug\net10.0\ref\dotnet Learn.dll
+C:\Users\Forkan\Desktop\learn-basics\dotnet Learn\bin\Debug\net10.0\BCrypt-Net-Next.dll
