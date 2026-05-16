@@ -10,6 +10,9 @@ namespace dotnet_Learn.Hubs
     public class ChatHub : Hub
     {
         private readonly IMongoCollection<User> _users;
+        // Static dictionary to track connection IDs for each user
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, HashSet<string>> _userConnections = 
+            new System.Collections.Concurrent.ConcurrentDictionary<string, HashSet<string>>();
 
         public ChatHub(MongoDbService mongoDbService)
         {
@@ -23,14 +26,22 @@ namespace dotnet_Learn.Hubs
 
             if (!string.IsNullOrEmpty(userId))
             {
-                var update = Builders<User>.Update
-                    .Set(u => u.IsOnline, true)
-                    .Set(u => u.LastSeen, DateTime.UtcNow);
-                
-                await _users.UpdateOneAsync(u => u.Id == userId, update);
-                
-                // Notify everyone that this user is online
-                await Clients.All.SendAsync("UserStatusChanged", userId, true);
+                var connections = _userConnections.GetOrAdd(userId, _ => new HashSet<string>());
+                lock (connections)
+                {
+                    connections.Add(Context.ConnectionId);
+                }
+
+                // Only update DB and notify others if this is the FIRST connection for this user
+                if (connections.Count == 1)
+                {
+                    var update = Builders<User>.Update
+                        .Set(u => u.IsOnline, true)
+                        .Set(u => u.LastSeen, DateTime.UtcNow);
+                    
+                    await _users.UpdateOneAsync(u => u.Id == userId, update);
+                    await Clients.All.SendAsync("UserStatusChanged", userId, true);
+                }
             }
 
             await base.OnConnectedAsync();
@@ -43,14 +54,30 @@ namespace dotnet_Learn.Hubs
 
             if (!string.IsNullOrEmpty(userId))
             {
-                var update = Builders<User>.Update
-                    .Set(u => u.IsOnline, false)
-                    .Set(u => u.LastSeen, DateTime.UtcNow);
-                
-                await _users.UpdateOneAsync(u => u.Id == userId, update);
-                
-                // Notify everyone that this user is offline
-                await Clients.All.SendAsync("UserStatusChanged", userId, false);
+                if (_userConnections.TryGetValue(userId, out var connections))
+                {
+                    bool isLastConnection = false;
+                    lock (connections)
+                    {
+                        connections.Remove(Context.ConnectionId);
+                        if (connections.Count == 0)
+                        {
+                            isLastConnection = true;
+                            _userConnections.TryRemove(userId, out _);
+                        }
+                    }
+
+                    // Only update DB and notify others if this was the LAST connection for this user
+                    if (isLastConnection)
+                    {
+                        var update = Builders<User>.Update
+                            .Set(u => u.IsOnline, false)
+                            .Set(u => u.LastSeen, DateTime.UtcNow);
+                        
+                        await _users.UpdateOneAsync(u => u.Id == userId, update);
+                        await Clients.All.SendAsync("UserStatusChanged", userId, false);
+                    }
+                }
             }
 
             await base.OnDisconnectedAsync(exception);
@@ -64,8 +91,8 @@ namespace dotnet_Learn.Hubs
 
             if (string.IsNullOrEmpty(senderId)) return;
 
-            // We notify the receiver (if they are online)
-            await Clients.User(receiverId).SendAsync("ReceiveMessage", senderId, messageText);
+            // We notify the receiver and sender (if online)
+            await Clients.Users(receiverId, senderId).SendAsync("ReceiveMessage", senderId, messageText);
         }
     }
 }
