@@ -19,6 +19,9 @@ namespace dotnet_Learn.Entities
         [BsonElement("text"), BsonRepresentation(BsonType.String)]
         public string? Text { get; set; }
 
+        [BsonElement("status"), BsonRepresentation(BsonType.String)]
+        public string Status { get; set; } = "Sent"; // Default status
+
         [BsonElement("timestamp"), BsonRepresentation(BsonType.DateTime)]
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     }

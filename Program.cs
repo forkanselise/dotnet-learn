@@ -14,6 +14,12 @@ builder.Services.AddOpenApi();
 builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddSignalR();
 
+// Initialize Firebase Admin SDK
+FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions()
+{
+    Credential = FirebaseAdmin.Auth.GoogleCredential.FromFile("service-account.json")
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>

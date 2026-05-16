@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using dotnet_Learn.Entities;
 using dotnet_Learn.Data;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace dotnet_Learn.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class UserController : ControllerBase
     {
         //private readonly MongoDbService _mongoDbService;
@@ -75,6 +78,23 @@ namespace dotnet_Learn.Controllers
                 return NotFound();
             }
             return NoContent();
+        }
+
+        [HttpPut("fcm-token")]
+        public async Task<IActionResult> UpdateFcmToken([FromBody] FcmTokenDto dto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var update = Builders<User>.Update.Set(u => u.FcmToken, dto.Token);
+            await _users.UpdateOneAsync(u => u.Id == userId, update);
+
+            return Ok();
+        }
+
+        public class FcmTokenDto
+        {
+            public string Token { get; set; } = string.Empty;
         }
     }
 }

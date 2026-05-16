@@ -42,8 +42,39 @@ namespace dotnet_Learn.Controllers
 
             await _messages.InsertOneAsync(message);
 
-            // Notify both Receiver and Sender via SignalR!
+            // 1. Notify via SignalR (Instant if app is open)
             await _hubContext.Clients.Users(request.ReceiverId, senderId).SendAsync("ReceiveMessage", senderId, request.Text);
+
+            // 2. Notify via Push Notification (If app is closed)
+            try
+            {
+                var receiver = await _users.Find(u => u.Id == request.ReceiverId).FirstOrDefaultAsync();
+                if (receiver != null && !string.IsNullOrEmpty(receiver.FcmToken))
+                {
+                    var sender = await _users.Find(u => u.Id == senderId).FirstOrDefaultAsync();
+                    var notificationMessage = new FirebaseAdmin.Messaging.Message()
+                    {
+                        Token = receiver.FcmToken,
+                        Notification = new FirebaseAdmin.Messaging.Notification()
+                        {
+                            Title = sender?.Name ?? "New Message",
+                            Body = request.Text
+                        },
+                        Data = new Dictionary<string, string>()
+                        {
+                            { "senderId", senderId },
+                            { "type", "chat" }
+                        }
+                    };
+
+                    await FirebaseAdmin.Messaging.FirebaseMessaging.DefaultInstance.SendAsync(notificationMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log notification error but don't fail the message send
+                Console.WriteLine($"Push Notification Error: {ex.Message}");
+            }
 
             return Ok(message);
         }
@@ -72,6 +103,27 @@ namespace dotnet_Learn.Controllers
                                           .SortBy(m => m.Timestamp)
                                           .ToListAsync();
             return Ok(messages);
+        }
+
+        [HttpPost("read/{senderId}")]
+        public async Task<IActionResult> MarkAsRead(string senderId)
+        {
+            var myId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            if (string.IsNullOrEmpty(myId)) return Unauthorized();
+
+            var filter = Builders<Message>.Filter.And(
+                Builders<Message>.Filter.Eq(m => m.SenderId, senderId),
+                Builders<Message>.Filter.Eq(m => m.ReceiverId, myId),
+                Builders<Message>.Filter.Eq(m => m.Status, "Sent")
+            );
+
+            var update = Builders<Message>.Update.Set(m => m.Status, "Read");
+            await _messages.UpdateManyAsync(filter, update);
+
+            // Notify the sender that their messages were read!
+            await _hubContext.Clients.User(senderId).SendAsync("MessagesRead", myId);
+
+            return Ok();
         }
     }
 

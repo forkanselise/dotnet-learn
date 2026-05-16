@@ -18,6 +18,9 @@ namespace dotnet_Learn.Entities
 
         [BsonElement("isOnline"), BsonRepresentation(BsonType.Boolean)]
         public bool IsOnline { get; set; } = false;
+        
+        [BsonElement("fcmToken"), BsonRepresentation(BsonType.String)]
+        public string? FcmToken { get; set; }
 
         [BsonElement("lastSeen"), BsonRepresentation(BsonType.DateTime)]
         public DateTime LastSeen { get; set; } = DateTime.UtcNow;
