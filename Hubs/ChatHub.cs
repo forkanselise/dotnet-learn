@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Authorization;
 using MongoDB.Driver;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
@@ -7,6 +8,7 @@ using dotnet_Learn.Entities;
 
 namespace dotnet_Learn.Hubs
 {
+    [Authorize]
     public class ChatHub : Hub
     {
         private readonly IMongoCollection<User> _users;
