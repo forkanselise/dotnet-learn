@@ -116,7 +116,7 @@ namespace dotnet_Learn.Controllers
             var filter = Builders<Message>.Filter.And(
                 Builders<Message>.Filter.Eq(m => m.SenderId, senderId),
                 Builders<Message>.Filter.Eq(m => m.ReceiverId, myId),
-                Builders<Message>.Filter.Eq(m => m.Status, "Sent")
+                Builders<Message>.Filter.Ne(m => m.Status, "Read")
             );
 
             var update = Builders<Message>.Update.Set(m => m.Status, "Read");
