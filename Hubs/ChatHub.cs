@@ -94,5 +94,17 @@ namespace dotnet_Learn.Hubs
             // We notify the receiver and sender (if online)
             await Clients.Users(receiverId, senderId).SendAsync("ReceiveMessage", senderId, messageText);
         }
+
+        // Method to broadcast typing status changes
+        public async Task SendTyping(string receiverId, bool isTyping)
+        {
+            var senderId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier) 
+                           ?? Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+            if (string.IsNullOrEmpty(senderId)) return;
+
+            // Broadcast to the target user that senderId is typing
+            await Clients.User(receiverId).SendAsync("UserTyping", senderId, isTyping);
+        }
     }
 }
