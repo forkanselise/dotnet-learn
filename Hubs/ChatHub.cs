@@ -86,9 +86,7 @@ namespace dotnet_Learn.Hubs
         // Method for sending messages through WebSockets
         public async Task SendMessageToUser(string receiverId, string messageText)
         {
-            var senderId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier) 
-                           ?? Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sub);
-
+            var senderId = Context.UserIdentifier;
             if (string.IsNullOrEmpty(senderId)) return;
 
             // We notify the receiver and sender (if online)
@@ -98,9 +96,7 @@ namespace dotnet_Learn.Hubs
         // Method to broadcast typing status changes
         public async Task SendTyping(string receiverId, bool isTyping)
         {
-            var senderId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier) 
-                           ?? Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sub);
-
+            var senderId = Context.UserIdentifier;
             if (string.IsNullOrEmpty(senderId)) return;
 
             // Broadcast to the target user that senderId is typing

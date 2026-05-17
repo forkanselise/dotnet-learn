@@ -86,6 +86,9 @@ builder.Services.AddAuthentication(options =>
         }
     };
 });
+
+builder.Services.AddSingleton<Microsoft.AspNetCore.SignalR.IUserIdProvider, CustomUserIdProvider>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -108,3 +111,13 @@ app.MapControllers();
 app.MapHub<dotnet_Learn.Hubs.ChatHub>("/chatHub");
 
 app.Run();
+
+public class CustomUserIdProvider : Microsoft.AspNetCore.SignalR.IUserIdProvider
+{
+    public string? GetUserId(Microsoft.AspNetCore.SignalR.HubConnectionContext connection)
+    {
+        return connection.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
+               ?? connection.User?.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub)?.Value 
+               ?? connection.User?.FindFirst("sub")?.Value;
+    }
+}
