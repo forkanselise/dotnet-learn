@@ -28,7 +28,7 @@ if (File.Exists(serviceAccountPath))
     {
         FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions()
         {
-            Credential = FirebaseAdmin.Auth.GoogleCredential.FromFile(serviceAccountPath)
+            Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(serviceAccountPath)
         });
         Console.WriteLine("Firebase Admin SDK initialized successfully.");
     }
@@ -94,7 +94,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseCors("AllowAll");
 
