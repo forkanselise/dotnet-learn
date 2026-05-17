@@ -14,11 +14,33 @@ builder.Services.AddOpenApi();
 builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddSignalR();
 
-// Initialize Firebase Admin SDK
-FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions()
+// Initialize Firebase Admin SDK safely
+var serviceAccountPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "service-account.json");
+if (!File.Exists(serviceAccountPath))
 {
-    Credential = FirebaseAdmin.Auth.GoogleCredential.FromFile("service-account.json")
-});
+    // Try in the project root relative path
+    serviceAccountPath = "service-account.json";
+}
+
+if (File.Exists(serviceAccountPath))
+{
+    try
+    {
+        FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions()
+        {
+            Credential = FirebaseAdmin.Auth.GoogleCredential.FromFile(serviceAccountPath)
+        });
+        Console.WriteLine("Firebase Admin SDK initialized successfully.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error initializing Firebase Admin SDK: {ex.Message}");
+    }
+}
+else
+{
+    Console.WriteLine("Warning: service-account.json was not found in the application directory. Push notifications will be disabled until it is provided.");
+}
 
 builder.Services.AddCors(options =>
 {

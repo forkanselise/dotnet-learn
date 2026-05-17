@@ -17,11 +17,13 @@ namespace dotnet_Learn.Controllers
     public class MessageController : ControllerBase
     {
         private readonly IMongoCollection<Message> _messages;
+        private readonly IMongoCollection<User> _users;
         private readonly Microsoft.AspNetCore.SignalR.IHubContext<Hubs.ChatHub> _hubContext;
 
         public MessageController(MongoDbService mongoDbService, Microsoft.AspNetCore.SignalR.IHubContext<Hubs.ChatHub> hubContext)
         {
             _messages = mongoDbService.database.GetCollection<Message>("Messages");
+            _users = mongoDbService.database.GetCollection<User>("Users");
             _hubContext = hubContext;
         }
 
