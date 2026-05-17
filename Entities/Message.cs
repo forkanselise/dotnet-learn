@@ -7,8 +7,8 @@ namespace dotnet_Learn.Entities
     public class Message
     {
         [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
+        [BsonRepresentation(BsonType.String)]
+        public string? Id { get; set; } = Guid.NewGuid().ToString();
 
         [BsonElement("senderId"), BsonRepresentation(BsonType.String)]
         public string? SenderId { get; set; }

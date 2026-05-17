@@ -6,8 +6,8 @@ namespace dotnet_Learn.Entities
     public class User
     {
         [BsonId]
-        [BsonElement("_id"), BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
+        [BsonElement("_id"), BsonRepresentation(BsonType.String)]
+        public string? Id { get; set; } = System.Guid.NewGuid().ToString();
 
         [BsonElement("name"), BsonRepresentation(BsonType.String)]
         public string? Name { get; set; }
