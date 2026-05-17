@@ -45,7 +45,7 @@ namespace dotnet_Learn.Controllers
             await _messages.InsertOneAsync(message);
 
             // 1. Notify via SignalR (Instant if app is open)
-            await _hubContext.Clients.Users(request.ReceiverId, senderId).SendAsync("ReceiveMessage", senderId, request.Text);
+            await _hubContext.Clients.Users(request.ReceiverId, senderId).SendAsync("ReceiveMessage", message);
 
             // 2. Notify via Push Notification (If app is closed)
             try
