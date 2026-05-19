@@ -205,8 +205,15 @@ namespace dotnet_Learn.Controllers
                                 }
                             };
 
-                            var fcmResponse = await FirebaseAdmin.Messaging.FirebaseMessaging.DefaultInstance.SendAsync(notificationMessage);
-                            Console.WriteLine($"--- GROUP FCM LOG: Successfully sent notification to '{user.Name}'. Response ID: {fcmResponse} ---");
+                            if (FirebaseAdmin.FirebaseApp.DefaultInstance == null)
+                            {
+                                Console.WriteLine("--- GROUP FCM LOG: Cannot send notification because FirebaseApp has NOT been initialized! Please configure the FIREBASE_SERVICE_ACCOUNT_JSON environment variable or service-account.json. ---");
+                            }
+                            else
+                            {
+                                var fcmResponse = await FirebaseAdmin.Messaging.FirebaseMessaging.DefaultInstance.SendAsync(notificationMessage);
+                                Console.WriteLine($"--- GROUP FCM LOG: Successfully sent notification to '{user.Name}'. Response ID: {fcmResponse} ---");
+                            }
                         }
                         catch (Exception ex)
                         {

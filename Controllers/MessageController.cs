@@ -94,8 +94,15 @@ namespace dotnet_Learn.Controllers
                         }
                     };
 
-                    var fcmResponse = await FirebaseAdmin.Messaging.FirebaseMessaging.DefaultInstance.SendAsync(notificationMessage);
-                    Console.WriteLine($"--- FCM PUSH LOG: Firebase Admin successfully sent message. Response ID: {fcmResponse} ---");
+                    if (FirebaseAdmin.FirebaseApp.DefaultInstance == null)
+                    {
+                        Console.WriteLine("--- FCM PUSH LOG: Cannot send notification because FirebaseApp has NOT been initialized! Please configure the FIREBASE_SERVICE_ACCOUNT_JSON environment variable in your Render dashboard, or place the service-account.json file in the backend root. ---");
+                    }
+                    else
+                    {
+                        var fcmResponse = await FirebaseAdmin.Messaging.FirebaseMessaging.DefaultInstance.SendAsync(notificationMessage);
+                        Console.WriteLine($"--- FCM PUSH LOG: Firebase Admin successfully sent message. Response ID: {fcmResponse} ---");
+                    }
                 }
             }
             catch (Exception ex)
