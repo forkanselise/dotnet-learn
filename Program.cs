@@ -14,32 +14,52 @@ builder.Services.AddOpenApi();
 builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddSignalR();
 
-// Initialize Firebase Admin SDK safely
-var serviceAccountPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "service-account.json");
-if (!File.Exists(serviceAccountPath))
-{
-    // Try in the project root relative path
-    serviceAccountPath = "service-account.json";
-}
+// Initialize Firebase Admin SDK safely (Support both environment variable and local file)
+var firebaseConfigJson = Environment.GetEnvironmentVariable("FIREBASE_SERVICE_ACCOUNT_JSON");
 
-if (File.Exists(serviceAccountPath))
+if (!string.IsNullOrEmpty(firebaseConfigJson))
 {
     try
     {
         FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions()
         {
-            Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(serviceAccountPath)
+            Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromJson(firebaseConfigJson)
         });
-        Console.WriteLine("Firebase Admin SDK initialized successfully.");
+        Console.WriteLine("Firebase Admin SDK initialized successfully from environment variable.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Error initializing Firebase Admin SDK: {ex.Message}");
+        Console.WriteLine($"Error initializing Firebase Admin SDK from environment variable: {ex.Message}");
     }
 }
 else
 {
-    Console.WriteLine("Warning: service-account.json was not found in the application directory. Push notifications will be disabled until it is provided.");
+    var serviceAccountPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "service-account.json");
+    if (!File.Exists(serviceAccountPath))
+    {
+        // Try in the project root relative path
+        serviceAccountPath = "service-account.json";
+    }
+
+    if (File.Exists(serviceAccountPath))
+    {
+        try
+        {
+            FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions()
+            {
+                Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(serviceAccountPath)
+            });
+            Console.WriteLine("Firebase Admin SDK initialized successfully from local file.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error initializing Firebase Admin SDK from file: {ex.Message}");
+        }
+    }
+    else
+    {
+        Console.WriteLine("Warning: Firebase service-account.json not found locally and FIREBASE_SERVICE_ACCOUNT_JSON env variable is not set. Push notifications are disabled.");
+    }
 }
 
 builder.Services.AddCors(options =>

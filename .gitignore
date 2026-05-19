@@ -1,0 +1,11 @@
+# Firebase Service Account Credentials (SENSITIVE)
+service-account.json
+
+# .NET Build artifacts
+bin/
+obj/
+.vs/
+*.user
+
+# User Secrets / local configurations
+appsettings.Development.json

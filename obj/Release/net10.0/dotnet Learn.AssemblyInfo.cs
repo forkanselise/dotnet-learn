@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("dotnet Learn")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bfa1da068ceb05151aa36d1a10aa8d69adb418d7")]
 [assembly: System.Reflection.AssemblyProductAttribute("dotnet Learn")]
 [assembly: System.Reflection.AssemblyTitleAttribute("dotnet Learn")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
