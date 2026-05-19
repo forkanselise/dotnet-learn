@@ -34,14 +34,26 @@ if (!string.IsNullOrEmpty(firebaseConfigJson))
 }
 else
 {
-    var serviceAccountPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "service-account.json");
-    if (!File.Exists(serviceAccountPath))
+    // Try to find the service account file in standard local and Render secret file paths
+    string[] candidatePaths = new string[]
     {
-        // Try in the project root relative path
-        serviceAccountPath = "service-account.json";
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "service-account.json"),
+        "service-account.json",
+        "/etc/secrets/service-account.json",
+        "/etc/secrets/FIREBASE_SERVICE_ACCOUNT_JSON"
+    };
+
+    string? serviceAccountPath = null;
+    foreach (var path in candidatePaths)
+    {
+        if (File.Exists(path))
+        {
+            serviceAccountPath = path;
+            break;
+        }
     }
 
-    if (File.Exists(serviceAccountPath))
+    if (serviceAccountPath != null)
     {
         try
         {
@@ -49,16 +61,16 @@ else
             {
                 Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(serviceAccountPath)
             });
-            Console.WriteLine("Firebase Admin SDK initialized successfully from local file.");
+            Console.WriteLine($"Firebase Admin SDK initialized successfully from local file at: {serviceAccountPath}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error initializing Firebase Admin SDK from file: {ex.Message}");
+            Console.WriteLine($"Error initializing Firebase Admin SDK from file at {serviceAccountPath}: {ex.Message}");
         }
     }
     else
     {
-        Console.WriteLine("Warning: Firebase service-account.json not found locally and FIREBASE_SERVICE_ACCOUNT_JSON env variable is not set. Push notifications are disabled.");
+        Console.WriteLine("Warning: Firebase credentials not found in environment variables, local files, or Render /etc/secrets/ paths. Push notifications are disabled.");
     }
 }
 
