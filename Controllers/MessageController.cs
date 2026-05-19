@@ -51,8 +51,17 @@ namespace dotnet_Learn.Controllers
             try
             {
                 var receiver = await _users.Find(u => u.Id == request.ReceiverId).FirstOrDefaultAsync();
-                if (receiver != null && !string.IsNullOrEmpty(receiver.FcmToken))
+                if (receiver == null)
                 {
+                    Console.WriteLine($"--- FCM PUSH LOG: Receiver with ID '{request.ReceiverId}' NOT found in MongoDB! ---");
+                }
+                else if (string.IsNullOrEmpty(receiver.FcmToken))
+                {
+                    Console.WriteLine($"--- FCM PUSH LOG: Receiver '{receiver.Name}' has NULL or EMPTY FcmToken in MongoDB! ---");
+                }
+                else
+                {
+                    Console.WriteLine($"--- FCM PUSH LOG: Sending FCM notification to receiver '{receiver.Name}' with Token: '{receiver.FcmToken.Substring(0, Math.Min(15, receiver.FcmToken.Length))}...' ---");
                     var sender = await _users.Find(u => u.Id == senderId).FirstOrDefaultAsync();
                     var notificationMessage = new FirebaseAdmin.Messaging.Message()
                     {
@@ -85,13 +94,14 @@ namespace dotnet_Learn.Controllers
                         }
                     };
 
-                    await FirebaseAdmin.Messaging.FirebaseMessaging.DefaultInstance.SendAsync(notificationMessage);
+                    var fcmResponse = await FirebaseAdmin.Messaging.FirebaseMessaging.DefaultInstance.SendAsync(notificationMessage);
+                    Console.WriteLine($"--- FCM PUSH LOG: Firebase Admin successfully sent message. Response ID: {fcmResponse} ---");
                 }
             }
             catch (Exception ex)
             {
                 // Log notification error but don't fail the message send
-                Console.WriteLine($"Push Notification Error: {ex.Message}");
+                Console.WriteLine($"--- FCM PUSH EXCEPTION: {ex.Message} ---\n{ex.StackTrace}");
             }
 
             return Ok(message);

@@ -149,61 +149,74 @@ namespace dotnet_Learn.Controllers
                     var sender = await _users.Find(u => u.Id == myId).FirstOrDefaultAsync();
                     var senderName = sender?.Name ?? "Group Member";
                     
-                    var offlineUsers = await _users.Find(u => otherMemberIds.Contains(u.Id) && !string.IsNullOrEmpty(u.FcmToken)).ToListAsync();
+                    Console.WriteLine($"--- GROUP FCM LOG: Checking group members for push notifications in group '{group.Name}' ---");
+                    var offlineUsers = await _users.Find(u => otherMemberIds.Contains(u.Id)).ToListAsync();
                     
                     foreach (var user in offlineUsers)
                     {
                         // Check if they are actually offline in SignalR (to avoid double notification)
                         bool isOnline = Hubs.ChatHub._userConnections.ContainsKey(user.Id);
-                        if (!isOnline && !string.IsNullOrEmpty(user.FcmToken))
+                        
+                        if (string.IsNullOrEmpty(user.FcmToken))
                         {
-                            try
-                            {
-                                var notificationMessage = new FirebaseAdmin.Messaging.Message()
-                                {
-                                    Token = user.FcmToken,
-                                    Notification = new FirebaseAdmin.Messaging.Notification()
-                                    {
-                                        Title = $"{group.Name} - {senderName}",
-                                        Body = dto.Text
-                                    },
-                                    Android = new FirebaseAdmin.Messaging.AndroidConfig()
-                                    {
-                                        Priority = FirebaseAdmin.Messaging.Priority.High,
-                                        Notification = new FirebaseAdmin.Messaging.AndroidNotification()
-                                        {
-                                            Sound = "default",
-                                            ClickAction = "FLUTTER_NOTIFICATION_CLICK",
-                                            ChannelId = "high_importance_channel"
-                                        }
-                                    },
-                                    Apns = new FirebaseAdmin.Messaging.ApnsConfig()
-                                    {
-                                        Headers = new Dictionary<string, string>()
-                                        {
-                                            { "apns-priority", "10" }
-                                        }
-                                    },
-                                    Data = new Dictionary<string, string>()
-                                    {
-                                        { "groupId", groupId },
-                                        { "groupName", group.Name },
-                                        { "type", "group" }
-                                    }
-                                };
+                            Console.WriteLine($"--- GROUP FCM LOG: Member '{user.Name}' has NULL or EMPTY FcmToken in MongoDB. Skipping. ---");
+                            continue;
+                        }
+                        
+                        if (isOnline)
+                        {
+                            Console.WriteLine($"--- GROUP FCM LOG: Member '{user.Name}' is currently ONLINE via SignalR connection. Skipping push. ---");
+                            continue;
+                        }
 
-                                await FirebaseAdmin.Messaging.FirebaseMessaging.DefaultInstance.SendAsync(notificationMessage);
-                            }
-                            catch (Exception ex)
+                        try
+                        {
+                            Console.WriteLine($"--- GROUP FCM LOG: Sending group push notification to '{user.Name}' (Token: '{user.FcmToken.Substring(0, Math.Min(15, user.FcmToken.Length))}...') ---");
+                            var notificationMessage = new FirebaseAdmin.Messaging.Message()
                             {
-                                Console.WriteLine($"Group Push Notification Error for user {user.Id}: {ex.Message}");
-                            }
+                                Token = user.FcmToken,
+                                Notification = new FirebaseAdmin.Messaging.Notification()
+                                {
+                                    Title = $"{group.Name} - {senderName}",
+                                    Body = dto.Text
+                                },
+                                Android = new FirebaseAdmin.Messaging.AndroidConfig()
+                                {
+                                    Priority = FirebaseAdmin.Messaging.Priority.High,
+                                    Notification = new FirebaseAdmin.Messaging.AndroidNotification()
+                                    {
+                                        Sound = "default",
+                                        ClickAction = "FLUTTER_NOTIFICATION_CLICK",
+                                        ChannelId = "high_importance_channel"
+                                    }
+                                },
+                                Apns = new FirebaseAdmin.Messaging.ApnsConfig()
+                                {
+                                    Headers = new Dictionary<string, string>()
+                                    {
+                                        { "apns-priority", "10" }
+                                    }
+                                },
+                                Data = new Dictionary<string, string>()
+                                {
+                                    { "groupId", groupId },
+                                    { "groupName", group.Name },
+                                    { "type", "group" }
+                                }
+                            };
+
+                            var fcmResponse = await FirebaseAdmin.Messaging.FirebaseMessaging.DefaultInstance.SendAsync(notificationMessage);
+                            Console.WriteLine($"--- GROUP FCM LOG: Successfully sent notification to '{user.Name}'. Response ID: {fcmResponse} ---");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"--- GROUP FCM EXCEPTION for user {user.Id}: {ex.Message} ---");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Failed to send group push notifications: {ex.Message}");
+                    Console.WriteLine($"--- GROUP FCM GENERAL EXCEPTION: {ex.Message} ---");
                 }
             }
 
