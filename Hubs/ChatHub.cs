@@ -12,13 +12,15 @@ namespace dotnet_Learn.Hubs
     public class ChatHub : Hub
     {
         private readonly IMongoCollection<User> _users;
+        private readonly IMongoCollection<Group> _groups;
         // Static dictionary to track connection IDs for each user
-        private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, HashSet<string>> _userConnections = 
+        public static readonly System.Collections.Concurrent.ConcurrentDictionary<string, HashSet<string>> _userConnections = 
             new System.Collections.Concurrent.ConcurrentDictionary<string, HashSet<string>>();
 
         public ChatHub(MongoDbService mongoDbService)
         {
             _users = mongoDbService.database.GetCollection<User>("Users");
+            _groups = mongoDbService.database.GetCollection<Group>("Groups");
         }
 
         public override async Task OnConnectedAsync()
@@ -41,6 +43,21 @@ namespace dotnet_Learn.Hubs
                     await _users.UpdateOneAsync(u => u.Id == userId, Builders<User>.Update.Set(u => u.IsOnline, true));
                     await Clients.All.SendAsync("UserStatusChanged", userId, true);
                     Console.WriteLine($"--- User {userId} is now ONLINE ---");
+                }
+
+                // Join all SignalR groups this user is a member of
+                try
+                {
+                    var userGroups = await _groups.Find(g => g.MemberIds.Contains(userId)).ToListAsync();
+                    foreach (var group in userGroups)
+                    {
+                        await Groups.AddToGroupAsync(Context.ConnectionId, group.Id);
+                        Console.WriteLine($"--- Added connection {Context.ConnectionId} of User {userId} to SignalR Group {group.Id} ---");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error joining groups in OnConnectedAsync: {ex.Message}");
                 }
             }
 

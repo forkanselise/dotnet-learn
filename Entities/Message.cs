@@ -16,6 +16,9 @@ namespace dotnet_Learn.Entities
         [BsonElement("receiverId"), BsonRepresentation(BsonType.String)]
         public string? ReceiverId { get; set; }
 
+        [BsonElement("groupId"), BsonRepresentation(BsonType.String)]
+        public string? GroupId { get; set; }
+
         [BsonElement("text"), BsonRepresentation(BsonType.String)]
         public string? Text { get; set; }
 
