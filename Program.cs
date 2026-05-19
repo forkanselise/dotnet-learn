@@ -15,12 +15,18 @@ builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddSignalR();
 
 // Initialize Firebase Admin SDK safely (Support both environment variable and local file)
-var firebaseConfigJson = Environment.GetEnvironmentVariable("FIREBASE_SERVICE_ACCOUNT_JSON");
+var firebaseConfigJson = Environment.GetEnvironmentVariable("FIREBASE_SERVICE_ACCOUNT_JSON")?.Trim();
 
 if (!string.IsNullOrEmpty(firebaseConfigJson))
 {
     try
     {
+        // Auto-clean common copy-paste issues (e.g. malformed escaped characters)
+        if (firebaseConfigJson.Contains("\\\\n"))
+        {
+            firebaseConfigJson = firebaseConfigJson.Replace("\\\\n", "\\n");
+        }
+
         FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions()
         {
             Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromJson(firebaseConfigJson)
@@ -30,6 +36,10 @@ if (!string.IsNullOrEmpty(firebaseConfigJson))
     catch (Exception ex)
     {
         Console.WriteLine($"Error initializing Firebase Admin SDK from environment variable: {ex.Message}");
+        if (ex.InnerException != null)
+        {
+            Console.WriteLine($"Inner Exception details: {ex.InnerException.Message}");
+        }
     }
 }
 else
@@ -57,15 +67,27 @@ else
     {
         try
         {
+            var rawJson = File.ReadAllText(serviceAccountPath).Trim();
+            
+            // Auto-clean common copy-paste issues (e.g. malformed escaped characters)
+            if (rawJson.Contains("\\\\n"))
+            {
+                rawJson = rawJson.Replace("\\\\n", "\\n");
+            }
+            
             FirebaseAdmin.FirebaseApp.Create(new FirebaseAdmin.AppOptions()
             {
-                Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(serviceAccountPath)
+                Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromJson(rawJson)
             });
             Console.WriteLine($"Firebase Admin SDK initialized successfully from local file at: {serviceAccountPath}");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error initializing Firebase Admin SDK from file at {serviceAccountPath}: {ex.Message}");
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"Inner Exception details: {ex.InnerException.Message}");
+            }
         }
     }
     else
