@@ -62,6 +62,22 @@ namespace dotnet_Learn.Controllers
                             Title = sender?.Name ?? "New Message",
                             Body = request.Text
                         },
+                        Android = new FirebaseAdmin.Messaging.AndroidConfig()
+                        {
+                            Priority = FirebaseAdmin.Messaging.Priority.High,
+                            Notification = new FirebaseAdmin.Messaging.AndroidNotification()
+                            {
+                                Sound = "default",
+                                ClickAction = "FLUTTER_NOTIFICATION_CLICK"
+                            }
+                        },
+                        Apns = new FirebaseAdmin.Messaging.ApnsConfig()
+                        {
+                            Headers = new Dictionary<string, string>()
+                            {
+                                { "apns-priority", "10" }
+                            }
+                        },
                         Data = new Dictionary<string, string>()
                         {
                             { "senderId", senderId },
